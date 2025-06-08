@@ -1,8 +1,7 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware'; // 1. Importar o middleware 'persist'
 
-// Definindo os tipos para os itens do carrinho e o estado da store
-// Isso é ótimo para a segurança de tipos e autocompletar do TypeScript.
+// 2. Adicionar 'quantity' à nossa interface de item
 export interface CartItem {
   id: string;
   name: string;
@@ -11,51 +10,65 @@ export interface CartItem {
   quantity: number;
 }
 
+// 3. Adicionar as novas funções à interface do estado
 interface CartState {
   items: CartItem[];
-  addToCart: (item: Omit<CartItem, "quantity">) => void;
+  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
   removeFromCart: (itemId: string) => void;
-  clearCart: () => void;
+  increaseQuantity: (itemId: string) => void;
+  decreaseQuantity: (itemId: string) => void;
 }
 
-// Criando a nossa store com Zustand
+// 4. Envolver nossa store com o middleware 'persist'
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
-      items: [], // Estado inicial: o carrinho começa vazio
-
-      // Ação para limpar o carrinho
-      clearCart: () => set({ items: [] }),
-
-      // Ação para remover um item específico
-      removeFromCart: (itemId) =>
-        set((state) => ({
-          items: state.items.filter((item) => item.id !== itemId),
-        })),
-
-      // Ação para adicionar um item ao carrinho
-      addToCart: (newItem) =>
+      items: [],
+      
+      // 5. Lógica de addToCart atualizada
+      addToCart: (product) =>
         set((state) => {
-          const itemExists = state.items.find((item) => item.id === newItem.id);
-
-          if (itemExists) {
-            // Se o item existe, criamos um NOVO array usando map.
-            // Para o item que corresponde ao ID, criamos um NOVO objeto com a quantidade atualizada.
-            // Para todos os outros itens, nós os mantemos como estão.
+          const existingItem = state.items.find((item) => item.id === product.id);
+          if (existingItem) {
+            // Se o item já existe, apenas aumenta a quantidade
             const updatedItems = state.items.map((item) =>
-              item.id === newItem.id
+              item.id === product.id
                 ? { ...item, quantity: item.quantity + 1 }
                 : item
             );
             return { items: updatedItems };
           } else {
-            // Se é um item novo, criamos um novo array com o item antigo e o novo.
-            return { items: [...state.items, { ...newItem, quantity: 1 }] };
+            // Se é um novo item, adiciona ao carrinho com quantidade 1
+            const updatedItems = [...state.items, { ...product, quantity: 1 }];
+            return { items: updatedItems };
           }
         }),
+
+      removeFromCart: (itemId) =>
+        set((state) => ({
+          items: state.items.filter((item) => item.id !== itemId),
+        })),
+        
+      // 6. Lógica para aumentar a quantidade
+      increaseQuantity: (itemId) => 
+        set((state) => ({
+          items: state.items.map((item) => 
+            item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+          ),
+        })),
+
+      // 7. Lógica para diminuir a quantidade
+      decreaseQuantity: (itemId) =>
+        set((state) => ({
+          items: state.items.map((item) => 
+            item.id === itemId 
+              ? { ...item, quantity: Math.max(1, item.quantity - 1) } 
+              : item
+          ),
+        })),
     }),
     {
-      name: "cart-storage", // Nome da chave que será usada no localStorage
+      name: 'cart-storage', // Nome da chave que será usada no localStorage
     }
   )
 );

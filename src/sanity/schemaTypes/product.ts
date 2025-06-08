@@ -1,38 +1,48 @@
 const productSchema = {
-  name: 'product',
-  type: 'document',
-  title: 'Product',
+  name: "product",
+  type: "document",
+  title: "Product",
   fields: [
     {
-      name: 'name',
-      type: 'string',
-      title: 'Name',
+      name: "name",
+      type: "string",
+      title: "Name",
     },
     {
-      name: 'slug',
-      type: 'slug',
-      title: 'Slug',
+      name: "slug",
+      type: "slug",
+      title: "Slug",
       options: {
-        source: 'name',
+        source: "name",
       },
     },
     {
-      name: 'images',
-      type: 'array',
-      title: 'Images',
-      of: [{ type: 'image' }],
+      name: "images",
+      type: "array",
+      title: "Images",
+      of: [{ type: "image" }],
     },
     {
-      name: 'description',
-      type: 'text',
-      title: 'Description',
+      name: "description",
+      type: "text",
+      title: "Description",
     },
     {
-      name: 'price',
-      type: 'number',
-      title: 'Price',
+      name: "price",
+      type: "number",
+      title: "Price",
+    },
+    {
+      name: "category", 
+      title: "Product Category",
+      type: "reference",
+      to: [
+        {
+          type: "category", 
+        },
+      ],
     },
   ],
-}
+};
 
 export default productSchema;

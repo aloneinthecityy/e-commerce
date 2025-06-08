@@ -1,22 +1,19 @@
-// src/components/AddToCartButton.tsx
+'use client'; 
 
-'use client'; // <-- Isso é ESSENCIAL! Marca este como um Client Component.
+import { useCartStore, CartItem } from '@/store/cartStore';
+import { toast } from 'sonner'; // 1. Importe o 'toast'
 
-import { useCartStore, CartItem } from '@/store/cartStore'; // Importamos nossa store e o tipo
-
-// O componente receberá os dados do produto como uma prop
 interface AddToCartButtonProps {
   product: Omit<CartItem, 'quantity'>;
 }
 
 export function AddToCartButton({ product }: AddToCartButtonProps) {
-  // Usamos o hook para acessar a função addToCart da nossa store
   const addToCart = useCartStore((state) => state.addToCart);
 
   const handleAddToCart = () => {
     addToCart(product);
-    // Opcional: Mostrar uma notificação/alerta de que o item foi adicionado!
-    alert(`${product.name} foi adicionado ao carrinho!`);
+    // 2. Substitua o alert pela chamada do toast
+    toast.success(`${product.name} foi adicionado ao carrinho!`);
   };
 
   return (

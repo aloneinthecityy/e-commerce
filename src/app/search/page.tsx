@@ -1,7 +1,6 @@
 import { client } from "@/lib/sanity";
 import Link from "next/link";
 import Image from "next/image";
-import { CategoryFilters } from "@/components/CategoryFilters"; // Importe o novo componente
 
 // A interface do produto que já conhecemos
 interface Product {
@@ -14,16 +13,11 @@ interface Product {
   price: number;
 }
 
-// Função de busca de produtos agora aceita um filtro de categoria opcional
-async function getProducts(category: string | null) {
-  let query = `*[_type == "product"`;
-
-  // Se uma categoria foi fornecida, adiciona o filtro à query
-  if (category) {
-    query += ` && category->name == "${category}"`;
-  }
-  
-  query += `]{
+// Nova função para buscar produtos com base em uma query
+async function searchProducts(query: string) {
+  // A query GROQ usa o operador 'match' para buscar textos.
+  // O '*' no final funciona como um curinga (wildcard).
+  const sanityQuery = `*[_type == "product" && name match "${query}*"]{
     _id,
     name,
     slug,
@@ -31,30 +25,25 @@ async function getProducts(category: string | null) {
     price
   }`;
 
-  const data = await client.fetch(query);
+  const data = await client.fetch(sanityQuery);
   return data;
 }
 
-// A página agora recebe 'searchParams'
-interface HomePageProps {
-  searchParams: Promise<{
-    category?: string;
-  }>;
+// Props da página que incluem os searchParams da URL
+interface SearchPageProps {
+  searchParams: Promise<{ q: string }>;
 }
 
-export default async function HomePage({ searchParams }: HomePageProps) {
-  // Aguarde a resolução de searchParams antes de acessar suas propriedades
-  const { category } = await searchParams; 
-  
-  const products: Product[] = await getProducts(category || null);
-  
+export default async function SearchPage(props: SearchPageProps) {
+  const { q: query } = await props.searchParams;
+  const products: Product[] = await searchProducts(query);
+
   return (
     <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Nossos Produtos</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        Resultados para: <span className="text-primary">{query}</span>
+      </h1>
       
-      <CategoryFilters />
-      
-      {/* O resto do seu JSX continua exatamente o mesmo */}
       {products.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product: Product) => (
@@ -77,7 +66,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         </div>
       ) : (
         <div className="text-center py-16">
-          <p className="text-lg text-gray-500">Nenhum produto encontrado nesta categoria.</p>
+          <p className="text-lg text-gray-500">Nenhum produto encontrado.</p>
+          <Link href="/" className="mt-4 inline-block text-primary hover:underline">
+            Voltar para a página inicial
+          </Link>
         </div>
       )}
     </main>
