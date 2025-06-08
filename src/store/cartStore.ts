@@ -21,7 +21,7 @@ interface CartState {
 // Criando a nossa store com Zustand
 export const useCartStore = create<CartState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       items: [], // Estado inicial: o carrinho começa vazio
 
       // Ação para limpar o carrinho

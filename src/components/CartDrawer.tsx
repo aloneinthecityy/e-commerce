@@ -1,8 +1,6 @@
-'use client'; // Essencial, pois este componente tem estado e interatividade.
-
-import { useState, useEffect } from 'react';
-import { ShoppingCart, X } from 'lucide-react';
-
+'use client';
+import { useState, useEffect } from "react";
+import { ShoppingCart, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -10,17 +8,16 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetFooter,
-  SheetClose,
-} from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useCartStore } from '@/store/cartStore';
-import Image from 'next/image';
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useCartStore, CartItem } from '@/store/cartStore';
+import Image from "next/image";
 
 // Este é o componente para um único item dentro do carrinho.
 // É uma boa prática separar componentes menores.
-function CartItemCard({ item }: { item: any }) {
+function CartItemCard({ item }: { item: CartItem }) {
   const removeFromCart = useCartStore((state) => state.removeFromCart);
 
   return (
@@ -40,7 +37,11 @@ function CartItemCard({ item }: { item: any }) {
           </p>
         </div>
       </div>
-      <Button variant="ghost" size="icon" onClick={() => removeFromCart(item.id)}>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => removeFromCart(item.id)}
+      >
         <X className="h-4 w-4" />
       </Button>
     </div>
@@ -58,7 +59,10 @@ export function CartDrawer() {
   }, []);
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
-  const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalPrice = items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   if (!isMounted) {
     return null; // Não renderiza nada no servidor

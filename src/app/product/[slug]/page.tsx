@@ -11,7 +11,7 @@ interface Product {
   price: number;
 }
 
-// A função para buscar os dados do Sanity
+// A função para buscar os dados do Sanity (sem alterações)
 async function getProduct(slug: string) {
   const query = `*[_type == "product" && slug.current == "${slug}"][0]{
     _id,
@@ -21,26 +21,25 @@ async function getProduct(slug: string) {
     price
   }`;
   
-  // A opção de cache está correta para garantir dados frescos
   const data = await client.fetch(query, {}, { cache: 'no-store' });
   return data;
 }
 
-// A MÁGICA ESTÁ AQUI NA ASSINATURA DA FUNÇÃO
-export default async function ProductPage(props: { params: { slug: string } }) {
-  // Aguarde props.params antes de acessar slug
-  const params = await props.params;
-  const { slug } = params;
+// 1. Defina o tipo para os props da página, com `params` como uma Promise.
+interface ProductPageProps {
+  params: Promise<{ slug: string }>;
+}
 
-  // Agora a variável 'slug' já está disponível diretamente!
+export default async function ProductPage(props: ProductPageProps) {
+  // 2. Use `await` para resolver a Promise e obter o objeto de parâmetros.
+  const { slug } = await props.params;
+
   const productData: Product = await getProduct(slug);
 
-  // Tratamento de erro caso o produto não seja encontrado
   if (!productData) {
     return <div>Produto não encontrado!</div>;
   }
 
-  // Prepara os dados para o botão do carrinho
   const productForCart = {
     id: productData._id,
     name: productData.name,

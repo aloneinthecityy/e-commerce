@@ -2,14 +2,13 @@ import { client } from "@/lib/sanity";
 import Link from "next/link";
 import Image from "next/image";
 
-// Tipo para nosso produto, para garantir que os dados estejam corretos
 interface Product {
   _id: string;
   name: string;
   slug: {
     current: string;
   };
-  images: any[]; // Simplificando por agora
+  imageUrl: string; // Use the field returned by the query
   price: number;
 }
 
@@ -37,7 +36,7 @@ export default async function HomePage() {
     <main className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Nossos Produtos</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {products.map((product: Product) => (
           <Link href={`/product/${product.slug.current}`} key={product._id} className="group">
             <div className="border rounded-lg overflow-hidden">
               {/* Next.js Image otimiza a imagem para nós! */}
