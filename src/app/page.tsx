@@ -1,4 +1,3 @@
-// app/page.tsx
 import { client } from "@/lib/sanity";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,9 +30,6 @@ async function getProducts() {
   return data;
 }
 
-// Esta é uma Server Component!
-// A palavra-chave 'async' permite que usemos 'await' para buscar dados
-// diretamente no componente, antes de enviar a página para o navegador.
 export default async function HomePage() {
   const products: Product[] = await getProducts();
 
