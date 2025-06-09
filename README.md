@@ -4,7 +4,7 @@
 
 **Modern Threads** é um projeto de vitrine de e-commerce moderno e performático, construído com as tecnologias mais recentes do ecossistema JavaScript. A aplicação exibe produtos de um CMS headless (Sanity.io), permite a visualização detalhada de cada item e inclui um carrinho de compras interativo com gerenciamento de estado no lado do cliente.
 
-O projeto utiliza o **App Router** do Next.js 13+ para aproveitar ao máximo os Server Components para busca de dados e renderização otimizada, e os Client Components para interatividade, garantindo uma experiência de usuário rápida e fluida.
+O projeto utiliza o **App Router** do Next.js 15 para aproveitar ao máximo os Server Components para busca de dados e renderização otimizada, e os Client Components para interatividade, garantindo uma experiência de usuário rápida e fluida.
 
 **[Link para o repositório](https://github.com/aloneinthecityy/e-commerce)**
 
@@ -24,7 +24,7 @@ O projeto utiliza o **App Router** do Next.js 13+ para aproveitar ao máximo os 
 
 Este projeto foi construído utilizando um stack moderno e robusto:
 
-*   **Framework:** [**Next.js 14**](https://nextjs.org/) (com App Router)
+*   **Framework:** [**Next.js 15**](https://nextjs.org/) (com App Router)
 *   **Linguagem:** [**TypeScript**](https://www.typescriptlang.org/)
 *   **CMS Headless:** [**Sanity.io**](https://www.sanity.io/) para gerenciamento de conteúdo.
 *   **Estilização:** [**Tailwind CSS**](https://tailwindcss.com/)
